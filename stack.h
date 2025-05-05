@@ -34,3 +34,52 @@ public:
 	}
 
 };
+template <typename T>
+class StackR {
+private:
+    T* arr;
+    int top;
+    int capacity;
+
+public:
+    StackR(int cap = 100) : capacity(cap), top(-1) {
+        arr = new T[capacity];
+    }
+
+    ~StackR() {
+        delete[] arr;
+    }
+
+    void push(const T& value) {
+        if (isFull()) {
+            throw std::overflow_error("stack is full");
+        }
+        arr[++top] = value;
+    }
+
+    void pop() {
+        if (isEmpty()) {
+            throw std::underflow_error("stack is empty");
+        }
+        --top;
+    }
+
+    T& peek() {
+        if (isEmpty()) {
+            throw std::underflow_error("Stack is empty");
+        }
+        return arr[top];
+    }
+
+    bool isEmpty() const {
+        return top == -1;
+    }
+
+    bool isFull() const {
+        return top == capacity - 1;
+    }
+
+    int getSize() const {
+        return top + 1;
+    }
+};

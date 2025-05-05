@@ -2,6 +2,7 @@
 #include <memory>
 #include <stdexcept>
 #include <iostream>
+#include "node.h"
 template<typename T>
 
 class QueueR
@@ -45,7 +46,7 @@ public:
 		if (isEmpty()) {
 			throw std::underflow_error("Queue is Empty!!!");
 		}
-		std::cout << "Peek called, front index: " << front << "\n"; // DEBUG
+		std::cout << "Peek called, front index: " << front << "\n";
 		return arr[front];
 	}
 };
@@ -99,4 +100,55 @@ public:
 	};
 	int getSize() { return size; };
 };
+template <typename T>
+class QueueL {
+private:
+	std::unique_ptr<sNode::Snode<T>> front;
+	sNode::Snode<T>* rear = nullptr;
+	int size = 0;
+
+public:
+	QueueL() = default;
+
+	void enqueue(const T& value) {
+		auto newNode = std::make_unique<sNode::Snode<T>>(value);
+		if (!rear) {
+			front = std::move(newNode);
+			rear = front.get();
+			return;
+		}
+		rear->nextNode = std::move(newNode);
+		rear = rear->nextNode.get();
+		
+		++size;
+	}
+
+	void dequeue() {
+		if (isEmpty()) {
+			throw std::underflow_error("Queue is empty!");
+		}
+		front = std::move(front->nextNode);
+		if (!front) {
+			rear = nullptr;
+		}
+		--size;
+	}
+
+	T& peek() {
+		if (isEmpty()) {
+			throw std::underflow_error("Queue is empty!");
+		}
+		return front->data;
+	}
+
+	bool isEmpty() const {
+		return front == nullptr;
+	}
+
+
+	int getSize() const {
+		return size;
+	}
+};
+
 
